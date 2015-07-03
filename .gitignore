@@ -1,0 +1,8 @@
+CMakeCache.txt
+CMakeFiles
+Makefile
+layerlab.so
+layerlab.pyd
+*.cmake
+\.DS_Store
+tbb
