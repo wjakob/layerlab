@@ -13,3 +13,6 @@ structural decompositions into layers and interfaces dramatically enlarge the
 size of the “language” that is available to describe materials, and for this
 reason they have been the focus of considerable interest in computer graphics
 in the last years.
+
+See [http://www.mitsuba-renderer.org/~wenzel/papers/layerlab-sg15.pdf](http://www.mitsuba-renderer.org/~wenzel/papers/layerlab-sg15.pdf)
+for a tutorial on using ``layerlab``.
