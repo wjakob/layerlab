@@ -55,7 +55,7 @@ endif()
 # Compile with AVX
 if (USE_AVX)
   if (MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX")
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX")
   else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
   endif()
@@ -74,12 +74,12 @@ endif()
 
 # Set platform-specific flags
 if (WIN32)
-  add_definitions("-D__WINDOWS__")
+  add_definitions(-D__WINDOWS__ -D_UNICODE)
 elseif(UNIX)
   if(APPLE)
-    add_definitions("-D__OSX__")
+    add_definitions(-D__OSX__)
   else()
-    add_definitions("-D__LINUX__")
+    add_definitions(-D__LINUX__)
   endif()
 endif()
 
@@ -95,7 +95,13 @@ include_directories(
 
 add_library(layerlab SHARED
   # Layer lab files
+  include/layer/common.h
   include/layer/color.h
+  include/layer/frame.h
+  include/layer/spline.h
+  include/layer/quad.h
+  include/layer/simd.h
+  include/layer/vector.h
   include/layer/math.h       src/math.cpp
   include/layer/hg.h         src/hg.cpp
   include/layer/fourier.h    src/fourier.cpp

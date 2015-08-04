@@ -1,5 +1,6 @@
 #include <layer/log.h>
 #include <cmath>
+#include <windows.h>
 
 NAMESPACE_BEGIN(layer)
 
@@ -43,5 +44,26 @@ std::string memString(size_t size, bool precise) {
 
 	return os.str();
 }
+
+#if defined(__WINDOWS__)
+std::string lastErrorText() {
+    DWORD errCode = GetLastError();
+    char *errorText = NULL;
+    if (!FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER
+        | FORMAT_MESSAGE_FROM_SYSTEM
+        | FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        errCode,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR)&errorText,
+        0,
+        NULL)) {
+        return "Internal error while looking up an error code";
+    }
+    std::string result(errorText);
+    LocalFree(errorText);
+    return result;
+}
+#endif
 
 NAMESPACE_END(layer)

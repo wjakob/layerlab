@@ -52,7 +52,7 @@ template <typename Scalar> Scalar normal_cdf(Scalar u) {
 	Scalar y, z;
 
 	if (!std::isfinite(u))
-		return (u < 0 ? 0 : 1);
+		return (u < 0 ? 0.f : 1.f);
 	y = std::abs(u);
 
 	if (y <= (Scalar) 0.46875 * (Scalar) math::SqrtTwo_d) {
@@ -300,7 +300,7 @@ __comp_ellint_1_series(const _Tp __k)
       __sum += __term;
     }
 
-  return _Tp(0.5 * M_PI) * __sum;
+  return _Tp(0.5 * math::Pi_d) * __sum;
 }
 
 
@@ -359,10 +359,10 @@ __ellint_1(const _Tp __k, const _Tp __phi)
   else
     {
       //  Reduce phi to -pi/2 < phi < +pi/2.
-      const int __n = std::floor(__phi / _Tp(M_PI)
+      const int __n = std::floor(__phi / _Tp(math::Pi_d)
                                + _Tp(0.5L));
       const _Tp __phi_red = __phi
-                          - __n * _Tp(M_PI);
+                          - __n * _Tp(math::Pi_d);
 
       const _Tp __s = std::sin(__phi_red);
       const _Tp __c = std::cos(__phi_red);
@@ -415,7 +415,7 @@ __comp_ellint_2_series(const _Tp __k)
       __sum += __term / __i2m;
     }
 
-  return _Tp(0.5 * M_PI) * (_Tp(1) - __sum);
+  return _Tp(0.5 * math::Pi_d) * (_Tp(1) - __sum);
 }
 
 
@@ -573,10 +573,10 @@ __ellint_2(const _Tp __k, const _Tp __phi)
   else
     {
       //  Reduce phi to -pi/2 < phi < +pi/2.
-      const int __n = std::floor(__phi / _Tp(M_PI)
+      const int __n = std::floor(__phi / _Tp(math::Pi_d)
                                + _Tp(0.5L));
       const _Tp __phi_red = __phi
-                          - __n * _Tp(M_PI);
+                          - __n * _Tp(math::Pi_d);
 
       const _Tp __kk = __k * __k;
       const _Tp __s = std::sin(__phi_red);
@@ -841,10 +841,10 @@ __ellint_3(const _Tp __k, const _Tp __nu, const _Tp __phi)
   else
     {
       //  Reduce phi to -pi/2 < phi < +pi/2.
-      const int __n = std::floor(__phi / _Tp(M_PI)
+      const int __n = std::floor(__phi / _Tp(math::Pi_d)
                                + _Tp(0.5L));
       const _Tp __phi_red = __phi
-                          - __n * _Tp(M_PI);
+                          - __n * _Tp(math::Pi_d);
 
       const _Tp __kk = __k * __k;
       const _Tp __s = std::sin(__phi_red);

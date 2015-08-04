@@ -171,7 +171,7 @@ Float microfacetNoExp(Float mu_o, Float mu_i, std::complex<Float> eta_,
     }
 }
 
-static Float Bmax(int n, Float relerr) {
+static Float Bmax(size_t n, Float relerr) {
     if (relerr >= 1e-1f)
         return 0.1662f*std::pow((Float) n, (Float) 2.05039);
     else if (relerr >= 1e-2f)
@@ -189,7 +189,7 @@ static Float Bmax(int n, Float relerr) {
 }
 
 void microfacetNoExpFourierSeries(Float mu_o, Float mu_i, std::complex<Float> eta_,
-                                  Float alpha, int n, Float phiMax,
+                                  Float alpha, size_t n, Float phiMax,
                                   std::vector<Float> &result) {
 
     bool reflect = -mu_i * mu_o > 0;
@@ -218,7 +218,7 @@ void microfacetNoExpFourierSeries(Float mu_o, Float mu_i, std::complex<Float> et
         /* Uh oh, some high frequency content leaked in the generally low frequency part.
            Increase the number of coefficients so that we can capture it. Fortunately, this
            happens very rarely. */
-        n = std::max(n, 100);
+        n = std::max(n, (size_t) 100);
     }
 
     VectorX coeffs(n);
@@ -293,7 +293,7 @@ void microfacetNoExpFourierSeries(Float mu_o, Float mu_i, std::complex<Float> et
 }
 
 void microfacetFourierSeries(Float mu_o, Float mu_i, std::complex<Float> eta_,
-                             Float alpha, int n, Float relerr, 
+                             Float alpha, size_t n, Float relerr,
                              std::vector<Float> &result) {
     bool reflect = -mu_i * mu_o > 0;
 
