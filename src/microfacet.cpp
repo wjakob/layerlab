@@ -242,7 +242,7 @@ void microfacetNoExpFourierSeries(Float mu_o, Float mu_i, std::complex<Float> et
     if (phiMax < math::Pi - math::Epsilon) {
         /* Precompute some sines and cosines */
         VectorX cosPhi(n), sinPhi(n);
-        for (int i=0; i<n; ++i) {
+        for (size_t i=0; i<n; ++i) {
             sinPhi[i] = std::sin(i*phiMax);
             cosPhi[i] = std::cos(i*phiMax);
         }
@@ -252,8 +252,8 @@ void microfacetNoExpFourierSeries(Float mu_o, Float mu_i, std::complex<Float> et
            then does a change of basis to proper Fourier coefficients. */
         MatrixX A(n, n);
 
-        for (int i=0; i<n; ++i) {
-            for (int j=0; j<=i; ++j) {
+        for (MatrixX::Index i=0; i < (MatrixX::Index) n; ++i) {
+            for (MatrixX::Index j=0; j <= (MatrixX::Index) i; ++j) {
                 if (i != j) {
                     A(i, j) = A(j, i) = (i * cosPhi[j] * sinPhi[i] -
                                          j * cosPhi[i] * sinPhi[j]) /
@@ -280,7 +280,7 @@ void microfacetNoExpFourierSeries(Float mu_o, Float mu_i, std::complex<Float> et
         VectorX temp = VectorX::Zero(n);
         coeffs[0] *= math::Pi;
         coeffs.tail(n-1) *= 0.5 * math::Pi;
-        for (int i=0; i<n; ++i) {
+        for (size_t i=0; i<n; ++i) {
             if (sigma[i] < 1e-9f * sigma[0])
                 break;
             temp += V.col(i) * U.col(i).dot(coeffs) / sigma[i];

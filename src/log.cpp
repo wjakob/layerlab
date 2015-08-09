@@ -1,6 +1,8 @@
 #include <layer/log.h>
 #include <cmath>
+#if defined(__WINDOWS__)
 #include <windows.h>
+#endif
 
 NAMESPACE_BEGIN(layer)
 
