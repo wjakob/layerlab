@@ -131,7 +131,7 @@ py::class_<Type> bind_eigen_1(py::module &m, const char *name,
         })
 
         /* Size query functions */
-        .def("size", [](const Type &m) { return m.size(); })
+        .def("size", &Type::size)
         .def("cols", &Type::cols)
         .def("rows", &Type::rows)
 
@@ -253,7 +253,7 @@ py::class_<Type> bind_eigen_2(py::module &m, const char *name,
         })
 
         /* Size query functions */
-        .def("size", [](const Type &m) { return m.size(); })
+        .def("size", &Type::size)
         .def("cols", &Type::cols)
         .def("rows", &Type::rows)
 

@@ -106,7 +106,7 @@ extern void expCosFourierSeries(Float A, Float B, Float relerr,
  */
 extern void microfacetNoExpFourierSeries(Float mu_o, Float mu_i,
                                          std::complex<Float> eta, Float alpha,
-                                         size_t n, Float phiMax,
+                                         int n, Float phiMax,
                                          std::vector<Float> &result);
 
 /**
@@ -133,7 +133,7 @@ extern void microfacetNoExpFourierSeries(Float mu_o, Float mu_i,
  *    Storage for the generated Fourier coefficients
  */
 extern void microfacetFourierSeries(Float mu_o, Float mu_i,
-                                    std::complex<Float> eta, Float alpha, size_t n,
+                                    std::complex<Float> eta, Float alpha, int n,
                                     Float relerr, std::vector<Float> &result);
 
 NAMESPACE_END(layer)

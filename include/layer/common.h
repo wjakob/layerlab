@@ -12,25 +12,10 @@
 #if !defined(NAMESPACE_BEGIN)
 #define NAMESPACE_BEGIN(name) namespace name {
 #endif
-
 #if !defined(NAMESPACE_END)
 #define NAMESPACE_END(name) }
 #endif
 
-#if defined(_MSC_VER)
-#pragma warning(disable: 4127) // warning C4127: conditional expression is constant
-#pragma warning(disable: 4244) // warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-#pragma warning(disable: 4305) // warning C4305: 'initializing': truncation from 'double' to 'float'
-#pragma warning(disable: 4800) // warning C4800 : 'uint32_t' : forcing value to bool 'true' or 'false' (performance warning)
-#pragma warning(disable: 4838) // warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-#pragma warning(disable: 4714) // warning C4714: function marked as __forceinline not inlined
-#pragma warning(disable: 4456) // warning C4456 : declaration of 'x' hides previous local declaration
-#define NOMINMAX
-#include <BaseTsd.h>
-typedef SSIZE_T ssize_t;
-#endif
-
-#define __TBB_NO_IMPLICIT_LINKAGE 1
 #define EIGEN_DONT_PARALLELIZE
 #define EIGEN_DEFAULT_IO_FORMAT \
     Eigen::IOFormat(7, 0, ", ", ";\n", "", "", "[", "]")
@@ -38,7 +23,6 @@ typedef SSIZE_T ssize_t;
 #include <cstdint>
 #include <cstddef>
 #include <filesystem/fwd.h>
-#include <string>
 
 NAMESPACE_BEGIN(layer)
 

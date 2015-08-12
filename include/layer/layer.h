@@ -34,7 +34,7 @@ public:
     LayerMode(size_t size = 0) {
         if (size % 2 == 1)
             throw std::runtime_error("LayerMode(): 'size' must be a multiple of 2");
-        MatrixS::Index hSize = (MatrixS::Index) size / 2;
+        size_t hSize = size / 2;
         reflectionTop.resize(hSize, hSize);
         reflectionBottom.resize(hSize, hSize);
         transmissionTopBottom.resize(hSize, hSize);
@@ -71,7 +71,7 @@ public:
     }
 
     /// Access a matrix entry
-    Float coeff(MatrixS::Index i, MatrixS::Index j) const {
+    Float coeff(int i, int j) const {
         int n = reflectionTop.rows();
 
         if (i < n && j < n)
@@ -313,8 +313,6 @@ protected:
 
         Quartet(uint32_t l, uint32_t o, uint32_t i, Float value)
          : l(l), o(o), i(i), value(value) { }
-        Quartet(size_t l, size_t o, size_t i, Float value)
-         : l((uint32_t) l), o((uint32_t) o), i((uint32_t) i), value(value) { }
     };
 
     /// Initialize from a list of quartets

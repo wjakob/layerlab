@@ -866,10 +866,10 @@ Scalar eval2D(const Scalar *nodes1, size_t size1, const Scalar *nodes2,
         return 0.0f;
 
 	Scalar result = 0.0f;
-	for (int yi=0; yi<=3; ++yi) {
-		Scalar wy = weights[1][yi];
-		for (int xi=0; xi<=3; ++xi) {
-			Scalar wxy = weights[0][xi] * wy;
+	for (int y=0; y<=3; ++y) {
+		Scalar wy = weights[1][y];
+		for (int x=0; x<=3; ++x) {
+			Scalar wxy = weights[0][x] * wy;
 			if (wxy == 0)
 				continue;
 

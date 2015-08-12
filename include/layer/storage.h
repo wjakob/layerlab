@@ -14,10 +14,6 @@
 #include <layer/mmap.h>
 #include <filesystem/path.h>
 
-#if defined(_MSC_VER)
-#pragma warning(disable: 4200) //  warning C4200 : nonstandard extension used : zero - sized array in struct / union
-#endif
-
 NAMESPACE_BEGIN(layer)
 
 /*

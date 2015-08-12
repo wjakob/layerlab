@@ -111,12 +111,12 @@ void python_export_layer(py::module &m) {
         .def("alpha", [](const BSDFStorage &m, size_t i) {
                  if (i >= 2)
                      throw py::index_error();
-                 return m.alpha((int) i);
+                 return m.alpha(i);
              }, D(BSDFStorage, alpha))
         .def("setAlpha", [](BSDFStorage &m, size_t i, float v) {
                  if (i >= 2)
                      throw py::index_error();
-                 m.setAlpha((int) i, v);
+                 m.setAlpha(i, v);
              }, D(BSDFStorage, setAlpha))
         .def("parameterSampleCount", [](const BSDFStorage &m, size_t i) {
                  if (i >= m.parameterCount())

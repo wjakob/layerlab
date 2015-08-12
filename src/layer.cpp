@@ -19,7 +19,7 @@ NAMESPACE_BEGIN(layer)
 namespace {
     template <typename VectorType> MatrixS sparseDiagonal(const VectorType &vec) {
         MatrixS result(vec.size(), vec.size());
-        for (MatrixS::Index i = 0; i < vec.size(); ++i)
+        for (size_t i = 0; i < (size_t) vec.size(); ++i)
             result.insert(i, i) = vec[i];
         result.makeCompressed();
         return result;
@@ -28,8 +28,8 @@ namespace {
     void sparsify(const MatrixX &dense, MatrixS &sparse) {
         sparse.setZero();
 
-        for (MatrixX::Index j = 0; j < dense.cols(); ++j) {
-            for (MatrixX::Index i = 0; i < dense.rows(); ++i) {
+        for (size_t j = 0; j < (size_t) dense.cols(); ++j) {
+            for (size_t i = 0; i < (size_t) dense.rows(); ++i) {
                 Float value = dense.coeff(i, j);
                 if (value != 0)
                     sparse.insert(i, j) = value;
@@ -98,15 +98,14 @@ void Layer::setQuartets(const std::vector<Quartet> &quartets) {
 
     size_t n = resolution() / 2;
     for (auto const &quartet: quartets) {
-        typedef MatrixS::Index Index;
         if (quartet.o < n && quartet.i < n)
-            tripletsTbt[quartet.l].emplace_back(Index(quartet.o), Index(quartet.i), quartet.value);
+            tripletsTbt[quartet.l].emplace_back(quartet.o, quartet.i, quartet.value);
         else if (quartet.o >= n && quartet.i >= n)
-            tripletsTtb[quartet.l].emplace_back(Index(quartet.o-n), Index(quartet.i-n), quartet.value);
+            tripletsTtb[quartet.l].emplace_back(quartet.o-n, quartet.i-n, quartet.value);
         else if (quartet.o <n && quartet.i >= n)
-            tripletsRt[quartet.l].emplace_back(Index(quartet.o), Index(quartet.i-n), quartet.value);
+            tripletsRt[quartet.l].emplace_back(quartet.o, quartet.i-n, quartet.value);
         else if (quartet.o >=n && quartet.i < n)
-            tripletsRb[quartet.l].emplace_back(Index(quartet.o-n), Index(quartet.i), quartet.value);
+            tripletsRb[quartet.l].emplace_back(quartet.o-n, quartet.i, quartet.value);
         else
             throw std::runtime_error("Layer::setFromQuartets(): internal error!");
     }
@@ -136,7 +135,7 @@ void Layer::setHenyeyGreenstein(Float albedo, Float g) {
             std::vector<Float> result;
             for (size_t i = range.begin(); i < range.end(); ++i) {
                 for (size_t o = 0; o <= i; ++o) {
-                    hgFourierSeries(m_nodes[o], m_nodes[i], g, (int) fourierOrders(),
+                    hgFourierSeries(m_nodes[o], m_nodes[i], g, fourierOrders(),
                                     ERROR_GOAL, result);
                     for (size_t l=0; l<std::min(fourierOrders(), result.size()); ++l) {
                         quartetsLocal.emplace_back(l, o, i, result[l] * albedo);
@@ -344,7 +343,7 @@ void Layer::add(const Layer &layer1, const Layer &layer2, Layer &output, bool ho
         throw std::runtime_error("Layer::addLayer(): incompatible sizes!");
 
     size_t n = output.resolution() / 2;
-    MatrixS I((int) n, (int) n);
+    MatrixS I(n, n);
     I.setIdentity();
 
     /* Special case: it is possible to save quite a bit of computation when we
@@ -434,12 +433,10 @@ void Layer::add(const Layer &layer1, const Layer &layer2, Layer &output, bool ho
     }
 }
 
-#if !defined(HAVE_FFTW)
-void Layer::setMatusik(const fs::path &, int, int) {
-    throw std::runtime_error("setMatusik(): You need to recompile with support for FFTW!");
-}
-#else
 void Layer::setMatusik(const fs::path &path, int ch, int order) {
+#if !defined(HAVE_FFTW)
+    throw std::runtime_error("setMatusik(): You need to recompile with support for FFTW!");
+#else
     if (ch < 0 || ch >= 3)
         throw std::runtime_error("Channel must be between 1 and 3");
     double scale[3] = { 1.0/1500.0, 1.15/1500.0, 1.66/1500.0 };
@@ -564,8 +561,8 @@ void Layer::setMatusik(const fs::path &path, int ch, int order) {
 
     setQuartets(quartets);
     applySurfaceIntegrationWeights(*this);
-}
 #endif
+}
 
 void Layer::reverse() {
     for (auto &m: m_modes)
@@ -588,7 +585,7 @@ void Layer::expand(Float target_tau) {
 
     size_t n = resolution() / 2;
 
-    MatrixS I((int) n, (int) n);
+    MatrixS I(n, n);
     I.setIdentity();
 
     MatrixS rowScale = sparseDiagonal(m_nodes.tail(n).cwiseInverse() * tau);
@@ -639,8 +636,8 @@ MatrixX Layer::matrix(size_t l) const {
     for (size_t i = 0; i < n; ++i)
         M.col(i) /= m_weights[i] * std::abs(m_nodes[i]) * (l == 0 ? 2.f : 1.f) * math::Pi;
 
-    M.block(0, 0, h, n) = M.block(0, 0, h, n).colwise().reverse().eval();
-    M.block(0, 0, h, n) = M.block(0, 0, n, h).rowwise().reverse().eval();
+    M.block(0, 0, h, n).colwise().reverseInPlace();
+    M.block(0, 0, n, h).rowwise().reverseInPlace();
 
     return M;
 }

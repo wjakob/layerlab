@@ -65,7 +65,7 @@ Float hg(Float mu_o, Float mu_i, Float g, Float phi_d);
  * \param result
  *    Storage for the generated Fourier coefficients
  */
-void hgFourierSeries(Float mu_o, Float mu_i, Float g, size_t kmax,
+void hgFourierSeries(Float mu_o, Float mu_i, Float g, int kmax,
 					 Float relerr, std::vector<Float> &result);
 
 NAMESPACE_END(layer)

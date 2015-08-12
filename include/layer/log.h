@@ -48,9 +48,4 @@ extern std::string timeString(Float time, bool precise = false);
  */
 extern std::string memString(size_t size, bool precise = false);
 
-#if defined(__WINDOWS__)
-/// Return a string version of GetLastError()
-extern std::string lastErrorText();
-#endif
-
 NAMESPACE_END(layer)

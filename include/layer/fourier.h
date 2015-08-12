@@ -42,7 +42,7 @@ NAMESPACE_BEGIN(layer)
  *    In the Python API, the \c nCoeffs parameter is automatically
  *    computed from the length of the input arrays and thus not needed.
  */
-Float evalFourier(const float *coeffs, size_t nCoeffs, Float phi);
+Float evalFourier(const float *coeffs, int nCoeffs, Float phi);
 
 /**
  * \brief Simultaneously evaluate <em>three</em> even Fourier series
@@ -61,7 +61,7 @@ Float evalFourier(const float *coeffs, size_t nCoeffs, Float phi);
  *    In the Python API, the \c nCoeffs parameter is automatically
  *    computed from the length of the input arrays and thus not needed.
  */
-Color3 evalFourier3(float *const coeffs[3], size_t nCoeffs, Float phi);
+Color3 evalFourier3(float *const coeffs[3], int nCoeffs, Float phi);
 
 /**
  * \brief Sample a angle from an even Fourier series
@@ -91,7 +91,7 @@ Color3 evalFourier3(float *const coeffs[3], size_t nCoeffs, Float phi);
  *     The importance weight (i.e. the value of the Fourier series
  *     divided by \c pdf)
  */
-Float sampleFourier(const float *coeffs, const Float *recip, size_t nCoeffs,
+Float sampleFourier(const float *coeffs, const Float *recip, int nCoeffs,
                     Float sample, Float &pdf, Float &phi);
 
 /**
@@ -162,7 +162,7 @@ inline Float pdfFourier(const float *coeffs, int nCoeffs, Float phi) {
  *    computed from the lengths of the input arrays and thus not needed.
  *    The \c parameter is also removed (the result array is directly returned).
  */
-void convolveFourier(const Float *a, size_t ka, const Float *b, size_t kb, Float *c);
+void convolveFourier(const Float *a, int ka, const Float *b, int kb, Float *c);
 
 /**
  * \brief Compute a Fourier series of the given even function by integrating it
@@ -196,7 +196,7 @@ void convolveFourier(const Float *a, size_t ka, const Float *b, size_t kb, Float
  *    In the Python API, the \c coeffs array is directly returned.
  */
 void filonIntegrate(const std::function<Float(Float)> &f, Float *coeffs,
-                    size_t nCoeffs, int nEvals, Float a = 0, Float b = math::Pi);
+                    int nCoeffs, int nEvals, Float a = 0, Float b = math::Pi);
 
 #if FOURIER_SCALAR == 1
 
