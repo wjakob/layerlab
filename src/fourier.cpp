@@ -35,14 +35,14 @@ static void initializeRecurrence(double c, __m256d &factor_prev, __m256d &factor
 }
 #endif
 
-Float evalFourier(const float *coeffs, int nCoeffs, Float phi) {
+Float evalFourier(const float *coeffs, size_t nCoeffs, Float phi) {
     #if FOURIER_SCALAR == 1
         double cosPhi      = std::cos((double) phi),
                cosPhi_prev = cosPhi,
                cosPhi_cur  = 1.0,
                value       = 0.0;
 
-        for (int i=0; i<nCoeffs; ++i) {
+        for (size_t i=0; i<nCoeffs; ++i) {
             value += coeffs[i] * cosPhi_cur;
 
             double cosPhi_next = 2.0*cosPhi*cosPhi_cur - cosPhi_prev;
@@ -61,7 +61,7 @@ Float evalFourier(const float *coeffs, int nCoeffs, Float phi) {
 
         initializeRecurrence(cosPhi, factorPhi_prev, factorPhi_cur);
 
-        for (int i=1; i<nCoeffs; i+=4) {
+        for (size_t i=1; i<nCoeffs; i+=4) {
             __m256d coeff = _mm256_cvtps_pd(_mm_load_ps(coeffs+i));
 
             __m256d cosPhi_next = _mm256_add_pd(_mm256_mul_pd(factorPhi_prev, cosPhi_prev),
@@ -75,7 +75,7 @@ Float evalFourier(const float *coeffs, int nCoeffs, Float phi) {
     #endif
 }
 
-Color3 evalFourier3(float * const coeffs[3], int nCoeffs, Float phi) {
+Color3 evalFourier3(float * const coeffs[3], size_t nCoeffs, Float phi) {
     #if FOURIER_SCALAR == 1
         double cosPhi      = std::cos((double) phi),
               cosPhi_prev = cosPhi,
@@ -83,7 +83,7 @@ Color3 evalFourier3(float * const coeffs[3], int nCoeffs, Float phi) {
 
         double Y = 0, R = 0, B = 0;
 
-        for (int i=0; i<nCoeffs; ++i) {
+        for (size_t i=0; i<nCoeffs; ++i) {
             Y += coeffs[0][i] * cosPhi_cur;
             R += coeffs[1][i] * cosPhi_cur;
             B += coeffs[2][i] * cosPhi_cur;
@@ -108,7 +108,7 @@ Color3 evalFourier3(float * const coeffs[3], int nCoeffs, Float phi) {
 
         initializeRecurrence(cosPhi, factorPhi_prev, factorPhi_cur);
 
-        for (int i=1; i<nCoeffs; i+=4) {
+        for (size_t i=1; i<nCoeffs; i+=4) {
             __m256d cosPhi_next = _mm256_add_pd(_mm256_mul_pd(factorPhi_prev, cosPhi_prev),
                     _mm256_mul_pd(factorPhi_cur,  cosPhi_cur));
 
@@ -135,7 +135,7 @@ Color3 evalFourier3(float * const coeffs[3], int nCoeffs, Float phi) {
     #endif
 }
 
-Float sampleFourier(const float *coeffs, const double *recip, int nCoeffs,
+Float sampleFourier(const float *coeffs, const double *recip, size_t nCoeffs,
                     Float sample, Float &pdf, Float &phi) {
 
     bool flip = false;
@@ -176,7 +176,7 @@ Float sampleFourier(const float *coeffs, const double *recip, int nCoeffs,
 
             deriv = coeff0;
 
-            for (int j=1; j<nCoeffs; ++j) {
+            for (size_t j=1; j<nCoeffs; ++j) {
                 double sinB_next = 2.0*cosB*sinB_cur - sinB_prev,
                        cosB_next = 2.0*cosB*cosB_cur - cosB_prev,
                        coeff     = (double) coeffs[j];
@@ -199,7 +199,7 @@ Float sampleFourier(const float *coeffs, const double *recip, int nCoeffs,
                 value_vec  = _mm256_set_sd(coeff0 * b),
                 deriv_vec  = _mm256_set_sd(coeff0);
 
-            for (int j=1; j<nCoeffs; j+=4) {
+            for (size_t j=1; j<nCoeffs; j+=4) {
                 __m128 coeff_vec_f = _mm_load_ps(coeffs+j);
                 __m256d recip_vec  = _mm256_load_pd(recip+j);
                 __m256d coeff_vec  = _mm256_cvtps_pd(coeff_vec_f);
@@ -252,7 +252,7 @@ Float sampleFourier(const float *coeffs, const double *recip, int nCoeffs,
     return (Float) (coeff0*(2*math::Pi_d));
 }
 
-Color3 sampleFourier3(float * const coeffs[3], const double *recip, int nCoeffs,
+Color3 sampleFourier3(float * const coeffs[3], const double *recip, size_t nCoeffs,
         Float sample, Float &pdf, Float &phi) {
     bool flip = false;
     if (sample < 0.5f) {
@@ -296,7 +296,7 @@ Color3 sampleFourier3(float * const coeffs[3], const double *recip, int nCoeffs,
 
             deriv = coeff0;
 
-            for (int j=1; j<nCoeffs; ++j) {
+            for (size_t j=1; j<nCoeffs; ++j) {
                 double sinB_next = 2.0*cosB*sinB_cur - sinB_prev,
                        cosB_next = 2.0*cosB*cosB_cur - cosB_prev,
                        coeff     = (double) coeffs[0][j];
@@ -318,7 +318,7 @@ Color3 sampleFourier3(float * const coeffs[3], const double *recip, int nCoeffs,
                 value_vec  = _mm256_set_sd(coeff0 * b),
                 deriv_vec  = _mm256_set_sd(coeff0);
 
-            for (int j=1; j<nCoeffs; j+=4) {
+            for (size_t j=1; j<nCoeffs; j+=4) {
                 __m128 coeff_vec_f = _mm_load_ps(coeffs[0]+j);
                 __m256d recip_vec  = _mm256_load_pd(recip+j);
                 __m256d coeff_vec  = _mm256_cvtps_pd(coeff_vec_f);
@@ -377,7 +377,7 @@ Color3 sampleFourier3(float * const coeffs[3], const double *recip, int nCoeffs,
         double R = coeffs[1][0];
         double B = coeffs[2][0];
 
-        for (int j=1; j<nCoeffs; ++j) {
+        for (size_t j=1; j<nCoeffs; ++j) {
             double cosB_next = 2.0*cosB*cosB_cur - cosB_prev,
                    coeffR    = (double) coeffs[1][j],
                    coeffB    = (double) coeffs[2][j];
@@ -394,7 +394,7 @@ Color3 sampleFourier3(float * const coeffs[3], const double *recip, int nCoeffs,
             R_vec  = _mm256_set_sd(coeffs[1][0]),
             B_vec  = _mm256_set_sd(coeffs[2][0]);
 
-        for (int j=1; j<nCoeffs; j+=4) {
+        for (size_t j=1; j<nCoeffs; j+=4) {
             __m128 coeff_R_vec_f = _mm_load_ps(coeffs[1]+j);
             __m128 coeff_B_vec_f = _mm_load_ps(coeffs[2]+j);
             __m256d coeff_R_vec  = _mm256_cvtps_pd(coeff_R_vec_f);
@@ -422,7 +422,7 @@ Color3 sampleFourier3(float * const coeffs[3], const double *recip, int nCoeffs,
 
 namespace {
     /// Filon integration over a single spline segment (used by filonIntegrate)
-    inline void filon(Float phi[2], Float f[3], int lmax, Float *output) {
+    inline void filon(Float phi[2], Float f[3], size_t lmax, Float *output) {
         Float h = phi[1] - phi[0], invH = 1/h;
 
         output[0] += (math::InvPi / 6.0) * h * (f[0]+4*f[1]+f[2]);
@@ -438,13 +438,13 @@ namespace {
                     term1 = f[0]-4*f[1]+3*f[2],
                     term2 = 4*(f[0]-2*f[1]+f[2]);
 
-        for (int l=1; l<lmax; ++l) {
+        for (size_t l=1; l<lmax; ++l) {
             Float cosPhi0Next = twoCosPhi0*cosPhi0Cur - cosPhi0Prev,
                   cosPhi1Next = twoCosPhi1*cosPhi1Cur - cosPhi1Prev,
                   sinPhi0Next = twoCosPhi0*sinPhi0Cur - sinPhi0Prev,
                   sinPhi1Next = twoCosPhi1*sinPhi1Cur - sinPhi1Prev;
 
-            Float invL    = 1/(Float) l,
+            Float invL    = 1 / (Float) l,
                   invL2H  = invH*invL*invL,
                   invL3H2 = invL2H*invL*invH;
 
@@ -462,7 +462,7 @@ namespace {
 };
 
 void filonIntegrate(const std::function<Float(Float)> &f, Float *coeffs,
-                    int nCoeffs, int nEvals, Float a, Float b) {
+                    size_t nCoeffs, int nEvals, Float a, Float b) {
     /* Avoid numerical overflow issues for extremely small intervals */
     if (sizeof(Float) == sizeof(float)) {
         if (std::abs(b-a) < 1e-6)
@@ -489,15 +489,16 @@ void filonIntegrate(const std::function<Float(Float)> &f, Float *coeffs,
     }
 }
 
-void convolveFourier(const Float *a, int ka, const Float *b, int kb, Float *c) {
-    for (int i=0; i<ka+kb-1; ++i) {
+void convolveFourier(const Float *a, size_t ka_, const Float *b, size_t kb_, Float *c) {
+    ssize_t ka = (ssize_t) ka_, kb = (ssize_t) kb_;
+    for (ssize_t i=0; i<ka+kb-1; ++i) {
         Float sum = 0;
 
-        for (int j=0; j<std::min(kb, ka-i); ++j)
+        for (ssize_t j=0; j<std::min(kb, ka - i); ++j)
             sum += b[j]*a[i+j];
 
-        for (int j=std::max(0, i-ka+1); j<std::min(kb, i+ka); ++j)
-            sum += b[j]*a[std::abs(i-j)];
+        for (ssize_t j=std::max((ssize_t) 0, i-ka+1); j<std::min(kb, i+ka); ++j)
+            sum += b[j]*a[std::abs(i - j)];
 
         if (i < kb)
             sum += b[i]*a[0];

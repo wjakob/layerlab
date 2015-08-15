@@ -1,6 +1,6 @@
-#include <filesystem/path.h>
 #include <layer/mmap.h>
 #include <layer/log.h>
+#include <filesystem/path.h>
 
 #if defined(__LINUX__) || defined(__OSX__)
 # include <sys/mman.h>
@@ -91,18 +91,18 @@ struct MemoryMappedFile::MemoryMappedFilePrivate {
 
 			unsigned int ret = GetTempPathW(MAX_PATH, tempPath);
 			if (ret == 0 || ret > MAX_PATH)
-				SError("GetTempPath failed(): %s", lastErrorText().c_str());
+                Error("GetTempFileName failed(): %s", lastErrorText());
 
 			ret = GetTempFileNameW(tempPath, L"mitsuba", 0, tempFilename);
 			if (ret == 0)
-				SError("GetTempFileName failed(): %s", lastErrorText().c_str());
+				Error("GetTempFileName failed(): %s", lastErrorText());
 
 			file = CreateFileW(tempFilename, GENERIC_READ | GENERIC_WRITE,
 				0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 			if (file == INVALID_HANDLE_VALUE)
 				Error("Error while trying to create temporary file: %s",
-					lastErrorText().c_str());
+					lastErrorText());
 
 			filename = fs::path(tempFilename);
 
@@ -167,11 +167,11 @@ struct MemoryMappedFile::MemoryMappedFilePrivate {
 				Error("munmap(): unable to unmap memory: %s", strerror(errno));
 		#elif defined(__WINDOWS__)
 			if (!UnmapViewOfFile(data))
-				Error("UnmapViewOfFile(): unable to unmap memory: %s", lastErrorText().c_str());
+				Error("UnmapViewOfFile(): unable to unmap memory: %s", lastErrorText());
 			if (!CloseHandle(fileMapping))
-				Error("CloseHandle(): unable to close file mapping: %s", lastErrorText().c_str());
+				Error("CloseHandle(): unable to close file mapping: %s", lastErrorText());
 			if (!CloseHandle(file))
-				Error("CloseHandle(): unable to close file: %s", lastErrorText().c_str());
+				Error("CloseHandle(): unable to close file: %s", lastErrorText());
 		#endif
 
 		if (temp) {
@@ -193,7 +193,7 @@ MemoryMappedFile::MemoryMappedFile()
 MemoryMappedFile::MemoryMappedFile(const fs::path &filename, size_t size)
 	: d(new MemoryMappedFilePrivate(filename, size)) {
 	Trace("Creating memory-mapped file \"%s\" (%s)..",
-		filename.str(), memString(d->size).c_str());
+		filename.str(), memString(d->size));
 	d->create();
 }
 
@@ -202,7 +202,7 @@ MemoryMappedFile::MemoryMappedFile(const fs::path &filename, bool readOnly)
 	d->readOnly = readOnly;
 	d->map();
     Trace("Mapped \"%s\" into memory (%s)..",
-          filename.str(), memString(d->size).c_str());
+          filename.str(), memString(d->size));
 }
 
 MemoryMappedFile::~MemoryMappedFile() {

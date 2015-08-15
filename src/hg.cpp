@@ -22,7 +22,7 @@ Float hg(Float mu_o, Float mu_i, Float g, Float phi_d) {
     return math::InvFourPi * (1 - g*g) / (temp * std::sqrt(temp));
 }
 
-void hgFourierSeries(Float mu_o, Float mu_i, Float g, int kmax, Float relerr,
+void hgFourierSeries(Float mu_o, Float mu_i, Float g, size_t kmax, Float relerr,
                      std::vector<Float> &result) {
     result.clear();
     if (g == 0) {
@@ -43,7 +43,7 @@ void hgFourierSeries(Float mu_o, Float mu_i, Float g, int kmax, Float relerr,
     Float coeff1 = b == 0 ? 0 :
         (math::signum(b) * temp / (absB * sqrtAB) * (K - a / (a-absB) * E));
 
-    int m = std::max(kmax * 2, 500);
+    size_t m = std::max(kmax * 2, (size_t) 500);
     Float *s = (Float *) alloca(sizeof(Float) * (m + 1));
 
     /* Compute the ratio between the $m$-th and $m+1$-th term
@@ -69,7 +69,7 @@ void hgFourierSeries(Float mu_o, Float mu_i, Float g, int kmax, Float relerr,
     result.push_back(coeff0);
 
     Float prod = coeff0 * C * 2;
-    for (int j=0; j<kmax-1; ++j) {
+    for (size_t j=0; j<kmax-1; ++j) {
         if (prod == 0 || std::abs(prod) < coeff0 * relerr)
             break;
         prod *= s[j];

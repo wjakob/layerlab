@@ -93,8 +93,8 @@ BSDFStorage::BSDFStorage(const fs::path &filename, size_t nNodes, size_t nChanne
 
     const char *id = BSDF_STORAGE_HEADER_ID;
 
-    const int len = strlen(BSDF_STORAGE_HEADER_ID);
-    for (int i=0; i<len; ++i)
+    const size_t len = strlen(BSDF_STORAGE_HEADER_ID);
+    for (size_t i=0; i<len; ++i)
         m_header->identifier[i] = id[i];
 
     m_header->version = BSDF_STORAGE_VERSION;
@@ -151,7 +151,7 @@ BSDFStorage::BSDFStorage(const fs::path &filename, bool readOnly)
 
     m_header = (Header *) m_mmap->data();
     const char *id = BSDF_STORAGE_HEADER_ID;
-    const int len = strlen(BSDF_STORAGE_HEADER_ID);
+    const size_t len = strlen(BSDF_STORAGE_HEADER_ID);
     if (memcmp(id, m_header->identifier, len) != 0)
         Error("BSDF storage file \"%s\" has a corrupt header!",
               filename.str().c_str());
@@ -279,7 +279,7 @@ BSDFStorage *BSDFStorage::fromLayerGeneral(const fs::path &filename,
         [&](const tbb::blocked_range<size_t> &range) {
             for (size_t i = range.begin(); i != range.end(); ++i) {
                 for (size_t o = 0; o < nNodes; ++o) {
-                    size_t ip, op;
+                    MatrixS::Index ip, op;
                     size_t offset = (o + i * nNodes) * 2;
 
                     if (i == h || i == h+1 || o == h || o == h+1) {
@@ -288,8 +288,8 @@ BSDFStorage *BSDFStorage::fromLayerGeneral(const fs::path &filename,
                         continue;
                     }
 
-                    ip = i < h ? (h-i-1) : (i-2);
-                    op = o < h ? (h-o-1) : (o-2);
+                    ip = (MatrixS::Index) (i < h ? (h-i-1) : (i-2));
+                    op = (MatrixS::Index) (o < h ? (h-o-1) : (o-2));
 
                     size_t nCoeffs = 0;
                     for (size_t basis=0; basis<nBases; ++basis) {
@@ -355,17 +355,17 @@ BSDFStorage *BSDFStorage::fromLayerGeneral(const fs::path &filename,
             float *coeffs = coeffsAndCount.first;
             OffsetType size = coeffsAndCount.second;
 
-            size_t ip, op;
+            MatrixS::Index ip, op;
 
             if (i == h || o == h) {
                 assert(size == 0);
                 continue;
             }
 
-            ip = i < h ? (h-i-1) : (i-2);
-            op = o < h ? (h-o-1) : (o-2);
+            ip = (MatrixS::Index) (i < h ? (h-i-1) : (i-2));
+            op = (MatrixS::Index) (o < h ? (h-o-1) : (o-2));
 
-            float weight = (float) std::abs(nodes[o] / (M_PI * nodes[i] * layer.weights()[ip]));
+            float weight = (float) std::abs(nodes[o] / (math::Pi * nodes[i] * layer.weights()[ip]));
 
 
             if (nChannels == 1) {

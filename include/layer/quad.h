@@ -57,7 +57,7 @@ void gaussLegendre(int n, Scalar *nodes, Scalar *weights) {
 	int m = (n+1)/2;
 	for (int i=0; i<m; ++i) {
 		/* Initial guess for this root using that of a Chebyshev polynomial */
-		double x = -std::cos((double) (2*i + 1) / (double) (2*n + 2) * M_PI);
+		double x = -std::cos((double) (2*i + 1) / (double) (2*n + 2) * math::Pi_d);
 		int it = 0;
 
 		while (true) {
@@ -130,7 +130,7 @@ void gaussLobatto(int n, Scalar *nodes, Scalar *weights) {
 		/* Initial guess for this root -- see "On the Legendre-Gauss-Lobatto Points
 		   and Weights" by Seymor V. Parter, Journal of Sci. Comp., Vol. 14, 4, 1999 */
 
-		double x = -std::cos((i + 0.25) * M_PI / n - 3/(8*n*M_PI * (i + 0.25)));
+		double x = -std::cos((i + 0.25) * math::Pi_d / n - 3/(8*n*math::Pi_d * (i + 0.25)));
 		int it = 0;
 
 		while (true) {
