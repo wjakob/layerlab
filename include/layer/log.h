@@ -10,7 +10,16 @@
 #pragma once
 
 #include <layer/common.h>
+
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4702) // warning C4702: unreachable code
+#endif
 #include <tinyformat.h>
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
+
 
 #define Error(...) \
     throw std::runtime_error(tfm::format(__VA_ARGS__))

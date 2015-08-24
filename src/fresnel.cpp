@@ -110,8 +110,6 @@ Float fresnelDielectricIntegral(Float eta) {
              + 4.98554f * invEta4
              - 1.36881f * invEta5;
     }
-
-	return 0.0f;
 }
 
 Float fresnelConductorIntegral(std::complex<Float> eta) {
