@@ -709,24 +709,24 @@ bool evalSplineWeights(Scalar min, Scalar max, size_t size, Scalar x, ssize_t &o
     weights[2] = -2 * t3 + 3 * t2;
     offset = (ssize_t) idx - 1;
 
-	/* Turn derivative weights into node weights using
-	   an appropriate chosen finite differences stencil */
-	Float d0 = t3 - 2*t2 + t, d1 = t3 - t2;
-	if (idx > 0) {
-		weights[2] += d0 * 0.5f;
-		weights[0] -= d0 * 0.5f;
-	} else {
-		weights[2] += d0;
-		weights[1] -= d0;
-	}
+    /* Turn derivative weights into node weights using
+       an appropriate chosen finite differences stencil */
+    Float d0 = t3 - 2*t2 + t, d1 = t3 - t2;
+    if (idx > 0) {
+        weights[2] += d0 * 0.5f;
+        weights[0] -= d0 * 0.5f;
+    } else {
+        weights[2] += d0;
+        weights[1] -= d0;
+    }
 
-	if (idx + 2 < size) {
-		weights[3] += d1 * 0.5f;
-		weights[1] -= d1 * 0.5f;
-	} else {
-		weights[2] += d1;
-		weights[1] -= d1;
-	}
+    if (idx + 2 < size) {
+        weights[3] += d1 * 0.5f;
+        weights[1] -= d1 * 0.5f;
+    } else {
+        weights[2] += d1;
+        weights[1] -= d1;
+    }
 
     return true;
 }
@@ -785,33 +785,33 @@ bool evalSplineWeights(const Scalar *nodes, size_t size, Scalar x, ssize_t &offs
            t3 = t2 * t;
 
     /* Function value weights */
-	weights[0] = 0.0f;
-	weights[1] = 2*t3 - 3*t2 + 1;
-	weights[2] = -2*t3 + 3*t2;
-	weights[3] = 0.0f;
+    weights[0] = 0.0f;
+    weights[1] = 2*t3 - 3*t2 + 1;
+    weights[2] = -2*t3 + 3*t2;
+    weights[3] = 0.0f;
 
     offset = (ssize_t) idx - 1;
-	
-	/* Turn derivative weights into node weights using
-	   an appropriate chosen finite differences stencil */
-	float d0 = t3 - 2*t2 + t, d1 = t3 - t2;
-	if (idx > 0) {
-		float factor = width / (nodes[idx+1]-nodes[idx-1]);
-		weights[2] += d0 * factor;
-		weights[0] -= d0 * factor;
-	} else {
-		weights[2] += d0;
-		weights[1] -= d0;
-	}
+    
+    /* Turn derivative weights into node weights using
+       an appropriate chosen finite differences stencil */
+    float d0 = t3 - 2*t2 + t, d1 = t3 - t2;
+    if (idx > 0) {
+        float factor = width / (nodes[idx+1]-nodes[idx-1]);
+        weights[2] += d0 * factor;
+        weights[0] -= d0 * factor;
+    } else {
+        weights[2] += d0;
+        weights[1] -= d0;
+    }
 
-	if (idx + 2 < size) {
-		float factor = width / (nodes[idx+2]-nodes[idx]);
-		weights[3] += d1 * factor;
-		weights[1] -= d1 * factor;
-	} else {
-		weights[2] += d1;
-		weights[1] -= d1;
-	}
+    if (idx + 2 < size) {
+        float factor = width / (nodes[idx+2]-nodes[idx]);
+        weights[3] += d1 * factor;
+        weights[1] -= d1 * factor;
+    } else {
+        weights[2] += d1;
+        weights[1] -= d1;
+    }
 
     return true;
 }
@@ -858,26 +858,26 @@ Scalar eval2D(const Scalar *nodes1, size_t size1, const Scalar *nodes2,
               size_t size2, const Scalar *values, Float x, Float y,
               bool extrapolate = false) {
     Scalar weights[2][4];
-	ssize_t offset[2];
+    ssize_t offset[2];
 
-	/* Compute interpolation weights separately for each dimension */
+    /* Compute interpolation weights separately for each dimension */
     if (!evalSplineWeights(nodes1, size1, x, offset[0], weights[0], extrapolate) ||
         !evalSplineWeights(nodes2, size2, y, offset[1], weights[1], extrapolate))
         return 0.0f;
 
-	Scalar result = 0.0f;
-	for (int yi=0; yi<=3; ++yi) {
-		Scalar wy = weights[1][yi];
-		for (int xi=0; xi<=3; ++xi) {
-			Scalar wxy = weights[0][xi] * wy;
-			if (wxy == 0)
-				continue;
+    Scalar result = 0.0f;
+    for (int yi=0; yi<=3; ++yi) {
+        Scalar wy = weights[1][yi];
+        for (int xi=0; xi<=3; ++xi) {
+            Scalar wxy = weights[0][xi] * wy;
+            if (wxy == 0)
+                continue;
 
-			ssize_t pos = (offset[1] + y) * size1 + offset[0] + x;
-			result += values[pos] * wxy;
-		}
-	}
-	return result;
+            ssize_t pos = (offset[1] + y) * size1 + offset[0] + x;
+            result += values[pos] * wxy;
+        }
+    }
+    return result;
 }
 
 #undef SPLINE_DERIVATIVES_UNIFORM

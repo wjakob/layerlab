@@ -192,10 +192,10 @@ public:
      * \param conserveEnergy
      *    Correct for energy loss due to multiple scattering?
      *    Default: \c true
-	 * \param fourierOrders
-	 *    Number of fourier orders that should be used internally
-	 *    in the computation. Defaults to the value returned by 
-	 *    \ref fourierOrders()
+     * \param fourierOrders
+     *    Number of fourier orders that should be used internally
+     *    in the computation. Defaults to the value returned by 
+     *    \ref fourierOrders()
      */
     void setMicrofacet(std::complex<Float> eta, Float alpha,
                        bool conserveEnergy = true,
@@ -220,19 +220,19 @@ public:
     static void add(const Layer &l1, const Layer &l2, Layer &output,
                     bool homogeneous = false);
 
-	/**
-	 * \brief Initialize the layer with a Matusik-style BRDF data file
-	 *
-	 * \param path
-	 *    Filename of the BRDF data file
-	 * \param channel
-	 *    Color channel to extract in <tt>[0..2]</tt>
-	 * \param fourierOrders
-	 *    Number of fourier orders that should be used internally
-	 *    in the computation. Defaults to the value returned by 
-	 *    \ref fourierOrders()
-	 */
-	void setMatusik(const fs::path &path, int channel, int fourierOrders = -1);
+    /**
+     * \brief Initialize the layer with a Matusik-style BRDF data file
+     *
+     * \param path
+     *    Filename of the BRDF data file
+     * \param channel
+     *    Color channel to extract in <tt>[0..2]</tt>
+     * \param fourierOrders
+     *    Number of fourier orders that should be used internally
+     *    in the computation. Defaults to the value returned by 
+     *    \ref fourierOrders()
+     */
+    void setMatusik(const fs::path &path, int channel, int fourierOrders = -1);
 
     /**
      * \brief Append a layer above the current one

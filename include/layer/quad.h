@@ -42,52 +42,52 @@ NAMESPACE_BEGIN(quad)
  */
 template <typename Scalar>
 void gaussLegendre(int n, Scalar *nodes, Scalar *weights) {
-	if (n-- < 1)
-		throw std::runtime_error("gaussLegendre(): n must be >= 1");
+    if (n-- < 1)
+        throw std::runtime_error("gaussLegendre(): n must be >= 1");
 
-	if (n == 0) {
-		nodes[0] = 0;
-		weights[0] = 2;
-	} else if (n == 1) {
+    if (n == 0) {
+        nodes[0] = 0;
+        weights[0] = 2;
+    } else if (n == 1) {
         nodes[0] = (Scalar) -std::sqrt(1.0 / 3.0);
         nodes[1] = -nodes[0];
-		weights[0] = weights[1] = 1;
-	}
+        weights[0] = weights[1] = 1;
+    }
 
-	int m = (n+1)/2;
-	for (int i=0; i<m; ++i) {
-		/* Initial guess for this root using that of a Chebyshev polynomial */
-		double x = -std::cos((double) (2*i + 1) / (double) (2*n + 2) * math::Pi_d);
-		int it = 0;
+    int m = (n+1)/2;
+    for (int i=0; i<m; ++i) {
+        /* Initial guess for this root using that of a Chebyshev polynomial */
+        double x = -std::cos((double) (2*i + 1) / (double) (2*n + 2) * math::Pi_d);
+        int it = 0;
 
-		while (true) {
-			if (++it > 20)
+        while (true) {
+            if (++it > 20)
                 throw std::runtime_error(
                     "gaussLobatto(" + std::to_string(n) +
                         "): did not converge after 20 iterations!");
 
             /* Search for the interior roots of P_{n+1}(x) using Newton's method. */
-			std::pair<double, double> L = math::legendre_pd(n+1, x);
-			double step = L.first / L.second;
-			x -= step;
+            std::pair<double, double> L = math::legendre_pd(n+1, x);
+            double step = L.first / L.second;
+            x -= step;
 
-			if (std::abs(step) <= 4 * std::abs(x) * std::numeric_limits<double>::epsilon())
-				break;
-		}
+            if (std::abs(step) <= 4 * std::abs(x) * std::numeric_limits<double>::epsilon())
+                break;
+        }
 
-		std::pair<double, double> L = math::legendre_pd(n+1, x);
+        std::pair<double, double> L = math::legendre_pd(n+1, x);
         weights[i] = weights[n - i] =
             (Scalar)(2 / ((1 - x * x) * (L.second * L.second)));
         nodes[i] = (Scalar) x;
         nodes[n - i] = (Scalar) -x;
         assert(i == 0 || x > nodes[i-1]);
-	}
+    }
 
-	if ((n % 2) == 0) {
-		std::pair<double, double> L = math::legendre_pd(n+1, 0.0);
-		weights[n/2] = (double) (2 / (L.second*L.second));
-		nodes[n/2] = 0;
-	}
+    if ((n % 2) == 0) {
+        std::pair<double, double> L = math::legendre_pd(n+1, 0.0);
+        weights[n/2] = (double) (2 / (L.second*L.second));
+        nodes[n/2] = 0;
+    }
 }
 
 /**
@@ -118,50 +118,50 @@ void gaussLegendre(int n, Scalar *nodes, Scalar *weights) {
  */
 template <typename Scalar>
 void gaussLobatto(int n, Scalar *nodes, Scalar *weights) {
-	if (n-- < 2)
-		throw std::runtime_error("gaussLobatto(): n must be >= 1");
+    if (n-- < 2)
+        throw std::runtime_error("gaussLobatto(): n must be >= 1");
 
-	nodes[0] = -1;
-	nodes[n] =  1;
-	weights[0] = weights[n] = 2 / (Scalar) (n * (n+1));
+    nodes[0] = -1;
+    nodes[n] =  1;
+    weights[0] = weights[n] = 2 / (Scalar) (n * (n+1));
 
-	int m = (n+1)/2;
-	for (int i=1; i<m; ++i) {
-		/* Initial guess for this root -- see "On the Legendre-Gauss-Lobatto Points
-		   and Weights" by Seymor V. Parter, Journal of Sci. Comp., Vol. 14, 4, 1999 */
+    int m = (n+1)/2;
+    for (int i=1; i<m; ++i) {
+        /* Initial guess for this root -- see "On the Legendre-Gauss-Lobatto Points
+           and Weights" by Seymor V. Parter, Journal of Sci. Comp., Vol. 14, 4, 1999 */
 
-		double x = -std::cos((i + 0.25) * math::Pi_d / n - 3/(8*n*math::Pi_d * (i + 0.25)));
-		int it = 0;
+        double x = -std::cos((i + 0.25) * math::Pi_d / n - 3/(8*n*math::Pi_d * (i + 0.25)));
+        int it = 0;
 
-		while (true) {
-			if (++it > 20)
+        while (true) {
+            if (++it > 20)
                 throw std::runtime_error(
                     "gaussLobatto(" + std::to_string(n) +
                         "): did not converge after 20 iterations!");
 
             /* Search for the interior roots of P_n'(x) using Newton's method. The same
-			   roots are also shared by P_{n+1}-P_{n-1}, which is nicer to evaluate. */
+               roots are also shared by P_{n+1}-P_{n-1}, which is nicer to evaluate. */
 
-			std::pair<double, double> Q = math::legendre_pd_diff(n, x);
-			double step = Q.first / Q.second;
-			x -= step;
+            std::pair<double, double> Q = math::legendre_pd_diff(n, x);
+            double step = Q.first / Q.second;
+            x -= step;
 
-			if (std::abs(step) <= 4 * std::abs(x) * std::numeric_limits<double>::epsilon())
-				break;
-		}
+            if (std::abs(step) <= 4 * std::abs(x) * std::numeric_limits<double>::epsilon())
+                break;
+        }
 
-		double Ln = math::legendre_p(n, x);
+        double Ln = math::legendre_p(n, x);
         weights[i] = weights[n - i] = (Scalar) (2 / ((n * (n + 1)) * Ln * Ln));
         nodes[i] = (Scalar) x;
         nodes[n - i] = (Scalar) -x;
         assert(x > nodes[i-1]);
-	}
+    }
 
-	if ((n % 2) == 0) {
-		double Ln = math::legendre_p(n, 0.0);
+    if ((n % 2) == 0) {
+        double Ln = math::legendre_p(n, 0.0);
         weights[n / 2] = (Scalar) (2 / ((n * (n + 1)) * Ln * Ln));
         nodes[n/2] = 0;
-	}
+    }
 }
 
 /**
@@ -185,8 +185,8 @@ void gaussLobatto(int n, Scalar *nodes, Scalar *weights) {
  */
 template <typename Scalar>
 void compositeSimpson(int n, Scalar *nodes, Scalar *weights) {
-	if (n % 2 != 1 || n < 3)
-		throw std::runtime_error("compositeSimpson(): n must be >= 3 and odd");
+    if (n % 2 != 1 || n < 3)
+        throw std::runtime_error("compositeSimpson(): n must be >= 3 and odd");
 
     n = (n - 1) / 2;
 
@@ -227,8 +227,8 @@ void compositeSimpson(int n, Scalar *nodes, Scalar *weights) {
  */
 template <typename Scalar>
 void compositeSimpson38(int n, Scalar *nodes, Scalar *weights) {
-	if ((n-1) % 3 != 0 || n < 4)
-		throw std::runtime_error("compositeSimpson38(): n-1 must be divisible by 3");
+    if ((n-1) % 3 != 0 || n < 4)
+        throw std::runtime_error("compositeSimpson38(): n-1 must be divisible by 3");
 
     n = (n - 1) / 3;
 

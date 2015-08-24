@@ -231,23 +231,23 @@ BSDFStorage::~BSDFStorage() {
 
 
 Float integrateCubicInterp1DN(size_t idx, const Float *nodes, const Float *values, size_t size) {
-	Float f0       = values[idx],
-	      f1       = values[idx+1],
-	      width    = nodes[idx+1] - nodes[idx],
-	      d0, d1;
+    Float f0       = values[idx],
+          f1       = values[idx+1],
+          width    = nodes[idx+1] - nodes[idx],
+          d0, d1;
 
-	/* Approximate the derivatives */
-	if (idx > 0)
-		d0 = width * (f1 - values[idx-1]) / (nodes[idx+1] - nodes[idx-1]);
-	else
-		d0 = f1 - f0;
+    /* Approximate the derivatives */
+    if (idx > 0)
+        d0 = width * (f1 - values[idx-1]) / (nodes[idx+1] - nodes[idx-1]);
+    else
+        d0 = f1 - f0;
 
-	if (idx + 2 < size)
-		d1 = width * (values[idx+2] - f0) / (nodes[idx+2] - nodes[idx]);
-	else
-		d1 = f1 - f0;
+    if (idx + 2 < size)
+        d1 = width * (values[idx+2] - f0) / (nodes[idx+2] - nodes[idx]);
+    else
+        d1 = f1 - f0;
 
-	return ((d0-d1) * (Float) (1.0 / 12.0) + (f0+f1) * 0.5f) * width;
+    return ((d0-d1) * (Float) (1.0 / 12.0) + (f0+f1) * 0.5f) * width;
 }
 
 

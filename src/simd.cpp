@@ -15,8 +15,8 @@ void * malloc(size_t size) {
 #if defined(__WINDOWS__)
     return _aligned_malloc(size, L1_CACHE_LINE_SIZE);
 #elif defined(__OSX__)
-	/* OSX malloc already returns 16-byte aligned data suitable
-	   for AltiVec and SSE computations */
+    /* OSX malloc already returns 16-byte aligned data suitable
+       for AltiVec and SSE computations */
     return ::malloc(size);
 #else
     return memalign(L1_CACHE_LINE_SIZE, size);
@@ -25,9 +25,9 @@ void * malloc(size_t size) {
 
 void free(void *ptr) {
 #if defined(__WINDOWS__)
-	_aligned_free(ptr);
+    _aligned_free(ptr);
 #else
-	::free(ptr);
+    ::free(ptr);
 #endif
 }
 
