@@ -330,4 +330,10 @@ protected:
     VectorX m_weights;
 };
 
+/// Heuristic to guess a suitable number of parameters (Microfacet model)
+extern std::pair<int, int> parameterHeuristicMicrofacet(Float alpha, std::complex<Float> &eta);
+
+/// Heuristic to guess a suitable number of parameters (HG model)
+extern std::pair<int, int> parameterHeuristicHG(Float g);
+
 NAMESPACE_END(layer)

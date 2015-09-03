@@ -20,6 +20,7 @@
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
+
 static const char *__doc_layer_BSDFStorage = R"doc()doc";
 
 static const char *__doc_layer_BSDFStorage_BSDFStorage = R"doc(Map an existing BSDF storage file into memory)doc";
@@ -254,6 +255,8 @@ Parameter ``nFourierOrders``:
 static const char *__doc_layer_Layer_Quartet = R"doc(Helper struct for sparse matrix construction)doc";
 
 static const char *__doc_layer_Layer_Quartet_Quartet = R"doc()doc";
+
+static const char *__doc_layer_Layer_Quartet_Quartet_2 = R"doc()doc";
 
 static const char *__doc_layer_Layer_Quartet_i = R"doc()doc";
 
@@ -1060,6 +1063,10 @@ Parameter ``phiMax``:
 Parameter ``result``:
     Storage for the generated Fourier coefficients)doc";
 
+static const char *__doc_layer_parameterHeuristicHG = R"doc(Heuristic to guess a suitable number of parameters (HG model))doc";
+
+static const char *__doc_layer_parameterHeuristicMicrofacet = R"doc(Heuristic to guess a suitable number of parameters (Microfacet model))doc";
+
 static const char *__doc_layer_pdfFourier = 
 R"doc(Evaluate the probability density of the sampling scheme implemented by
 sampleFourier() at the position ``phi``.
@@ -1716,3 +1723,8 @@ Parameter ``time``:
 Parameter ``precise``:
     When set to true, a higher-precision string representation is
     generated.)doc";
+
+#if defined(__GNUG__)
+#pragma GCC diagnostic pop
+#endif
+

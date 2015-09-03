@@ -696,4 +696,52 @@ std::string LayerMode::toString() const {
     return oss.str();
 }
 
+std::pair<int, int> parameterHeuristicMicrofacet(Float alpha, std::complex<Float> &eta) {
+    alpha = std::min(alpha, (Float) 1);
+    if (eta.real() < 1 && eta.imag() == 0)
+        eta = std::complex<Float>(1.f) / eta;
+
+    static const Float c[][9] = {
+        /* IOR    A_n      B_n     C_n       D_n      A_m      B_m      C_m      D_m                                 */
+        {  0.0, 35.275,  14.136,  29.287,  1.8765,   39.814,  88.992, -98.998,  39.261  },  /* Generic conductor     */
+        {  1.1, 256.47, -73.180,  99.807,  37.383,  110.782,  57.576,  94.725,  14.001  },  /* Dielectric, eta = 1.1 */
+        {  1.3, 100.264, 28.187,  64.425,  14.850,   45.809,  17.785, -7.8543,  12.892  },  /* Dielectric, eta = 1.3 */
+        {  1.5, 74.176,  27.470,  42.454,  9.6437,   31.700,  44.896, -45.016,  19.643  },  /* Dielectric, eta = 1.5 */
+        {  1.7, 80.098,  17.016,  50.656,  7.2798,   46.549,  58.592, -73.585,  25.473  },  /* Dielectric, eta = 1.7 */
+    };
+
+    int i0 = 0, i1 = 0;
+
+    if (eta.imag() == 0) { /* Dielectric case */
+        for (int i=1; i<4; ++i) {
+            if (eta.real() >= c[i][0] && eta.real() <= c[i+1][0]) {
+                if (std::abs(eta.real()-c[i][0]) < 0.05f) {
+                    i1 = i0 = i;
+                } else if (std::abs(eta-c[i+1][0]) < 0.05f) {
+                    i0 = i1 = i+1;
+                } else {
+                    i0 = i; i1 = i+1;
+                }
+            }
+        }
+
+        if (!i0)
+            throw std::runtime_error("Index of refraction is out of bounds (must be between 1.1 and 1.7)!");
+    }
+
+    Float n0 = std::max(c[i0][1] + c[i0][2]*std::pow(std::log(alpha), (Float) 4)*alpha, c[i0][3]+c[i0][4]*std::pow(alpha, (Float) -1.2f));
+    Float n1 = std::max(c[i1][1] + c[i1][2]*std::pow(std::log(alpha), (Float) 4)*alpha, c[i1][3]+c[i1][4]*std::pow(alpha, (Float) -1.2f));
+    Float m0 = std::max(c[i0][5] + c[i0][6]*std::pow(std::log(alpha), (Float) 4)*alpha, c[i0][7]+c[i0][8]*std::pow(alpha, (Float) -1.2f));
+    Float m1 = std::max(c[i1][5] + c[i1][6]*std::pow(std::log(alpha), (Float) 4)*alpha, c[i1][7]+c[i1][8]*std::pow(alpha, (Float) -1.2f));
+
+    return std::make_pair((int) std::ceil(std::max(n0, n1)), (int) std::ceil(std::max(m0, m1)));
+}
+
+std::pair<int, int> parameterHeuristicHG(Float g) {
+    g = std::abs(g);
+    Float m = 5.4f/(1.0f - g) - 1.3f;
+    Float n = 8.6f/(1.0f - g) - 0.2f;
+    return std::make_pair((int) std::ceil(n), (int) std::ceil(m));
+}
+
 NAMESPACE_END(layer)

@@ -705,8 +705,10 @@ bool evalSplineWeights(Scalar min, Scalar max, size_t size, Scalar x, ssize_t &o
     Scalar t2 = t * t, t3 = t2 * t;
 
     /* Function value weights */
+    weights[0] = 0.f;
     weights[1] =  2 * t3 - 3 * t2 + 1;
     weights[2] = -2 * t3 + 3 * t2;
+    weights[3] = 0.f;
     offset = (ssize_t) idx - 1;
 
     /* Turn derivative weights into node weights using
@@ -785,10 +787,10 @@ bool evalSplineWeights(const Scalar *nodes, size_t size, Scalar x, ssize_t &offs
            t3 = t2 * t;
 
     /* Function value weights */
-    weights[0] = 0.0f;
+    weights[0] = 0.f;
     weights[1] = 2*t3 - 3*t2 + 1;
     weights[2] = -2*t3 + 3*t2;
-    weights[3] = 0.0f;
+    weights[3] = 0.f;
 
     offset = (ssize_t) idx - 1;
     
@@ -863,9 +865,9 @@ Scalar eval2D(const Scalar *nodes1, size_t size1, const Scalar *nodes2,
     /* Compute interpolation weights separately for each dimension */
     if (!evalSplineWeights(nodes1, size1, x, offset[0], weights[0], extrapolate) ||
         !evalSplineWeights(nodes2, size2, y, offset[1], weights[1], extrapolate))
-        return 0.0f;
+        return 0.f;
 
-    Scalar result = 0.0f;
+    Scalar result = 0.f;
     for (int yi=0; yi<=3; ++yi) {
         Scalar wy = weights[1][yi];
         for (int xi=0; xi<=3; ++xi) {

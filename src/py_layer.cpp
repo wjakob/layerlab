@@ -138,4 +138,10 @@ void python_export_layer(py::module &m) {
                 return BSDFStorage::fromLayerRGB(path, layerR, layerG, layerB);
             }, D(BSDFStorage, fromLayer))
         .def("__repr__", &BSDFStorage::toString);
+
+    m.def("parameterHeuristicMicrofacet", parameterHeuristicMicrofacet,
+            py::arg("alpha"), py::arg("eta"), D(parameterHeuristicMicrofacet));
+
+    m.def("parameterHeuristicHG", parameterHeuristicHG,
+            py::arg("g"), D(parameterHeuristicHG));
 }
