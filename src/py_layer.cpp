@@ -63,6 +63,7 @@ void python_export_layer(py::module &m) {
 
     py::class_<Layer>(m, "Layer", D(Layer))
         .def(py::init<const VectorX &, const VectorX &, int>(), py::arg("nodes"), py::arg("weights"), py::arg("nFourierOrders") = 1)
+        .def(py::init<const Layer&>())
         .def("reverse", &Layer::reverse, D(Layer, reverse))
         .def("clear", &Layer::clear, D(Layer, clear))
         .def("setDiffuse", &Layer::setDiffuse, D(Layer, setDiffuse), py::arg("albedo"))
