@@ -19,8 +19,8 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 set(Python_ADDITIONAL_VERSIONS 3.4 3.5 3.6)
-find_package(PythonLibs 3 REQUIRED)
-find_package(PythonInterp 3 QUIET)
+find_package(PythonLibs REQUIRED)
+find_package(PythonInterp QUIET)
 
 # Build TBB
 if (UNIX)
@@ -136,7 +136,7 @@ endif()
 if (WIN32)
   if (MSVC)
     # Enforce size-based optimization and link time code generation on MSVC (~30% smaller binaries in experiments)
-    set_target_properties(layerlab PROPERTIES COMPILE_FLAGS "/Os /GL")
+    set_target_properties(layerlab PROPERTIES COMPILE_FLAGS "/Os /GL /MP /bigobj")
     set_target_properties(layerlab PROPERTIES LINK_FLAGS "/LTCG")
   endif()
 
