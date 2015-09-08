@@ -4,5 +4,8 @@ Makefile
 layerlab.so
 layerlab.pyd
 *.cmake
+*.pyc
+*.pyo
+__pycache__
 \.DS_Store
 tbb

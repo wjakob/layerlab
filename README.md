@@ -16,3 +16,5 @@ in the last years.
 
 See [http://www.mitsuba-renderer.org/~wenzel/papers/layerlab-sg15.pdf](http://www.mitsuba-renderer.org/~wenzel/papers/layerlab-sg15.pdf)
 for a tutorial on using ``layerlab``.
+
+A few recipe-style examples are available in the ``recipes`` directory.

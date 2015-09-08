@@ -1,3 +1,6 @@
+import sys
+sys.path.append('.')
+
 import layerlab as ll
 
 albedo = [0.5, 0.5, 0.6]
