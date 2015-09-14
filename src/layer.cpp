@@ -734,14 +734,23 @@ std::pair<int, int> parameterHeuristicMicrofacet(Float alpha, std::complex<Float
     Float m0 = std::max(c[i0][5] + c[i0][6]*std::pow(std::log(alpha), (Float) 4)*alpha, c[i0][7]+c[i0][8]*std::pow(alpha, (Float) -1.2f));
     Float m1 = std::max(c[i1][5] + c[i1][6]*std::pow(std::log(alpha), (Float) 4)*alpha, c[i1][7]+c[i1][8]*std::pow(alpha, (Float) -1.2f));
 
-    return std::make_pair((int) std::ceil(std::max(n0, n1)), (int) std::ceil(std::max(m0, m1)));
+    int n_i = (int) std::ceil(std::max(n0, n1));
+    int m_i = (int) std::ceil(std::max(m0, m1));
+
+    if (n_i % 2 == 1)
+        n_i += 1;
+
+    return std::make_pair(n_i, m_i);
 }
 
 std::pair<int, int> parameterHeuristicHG(Float g) {
     g = std::abs(g);
     Float m = 5.4f/(1.0f - g) - 1.3f;
     Float n = 8.6f/(1.0f - g) - 0.2f;
-    return std::make_pair((int) std::ceil(n), (int) std::ceil(m));
+    int n_i = (int) std::ceil(n), m_i = (int) std::ceil(m);
+    if (n_i % 2 == 1)
+        n_i += 1;
+    return std::make_pair(n_i, m_i);
 }
 
 NAMESPACE_END(layer)
