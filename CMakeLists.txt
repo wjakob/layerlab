@@ -74,7 +74,7 @@ endif()
 
 # Set platform-specific flags
 if (WIN32)
-  add_definitions(-D__WINDOWS__ -D_UNICODE -DNOMINMAX)
+  add_definitions(-D__WINDOWS__ -D_UNICODE)
 elseif(UNIX)
   if(APPLE)
     add_definitions(-D__OSX__)
