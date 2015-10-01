@@ -1,3 +1,4 @@
+#include <layer/common.h>
 #include <filesystem/path.h>
 #include <filesystem/resolver.h>
 #include <layer/mmap.h>
