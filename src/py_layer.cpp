@@ -82,7 +82,7 @@ void python_export_layer(py::module &m) {
         .def("addToBottom", [](Layer &l1, const Layer &l2, bool homogeneous) { l1.addToBottom(l2, homogeneous); }, D(Layer, addToBottom))
         .def("addToBottom", [](Layer &l1, const Layer &l2) { l1.addToBottom(l2); })
         .def("expand", &Layer::expand, D(Layer, expand))
-        .def("eval", [](const Layer &l, py::array_dtype<Float> mu_o, py::array_dtype<Float> mu_i, py::array_dtype<Float> phi_d) {
+        .def("eval", [](const Layer &l, py::array_t<Float> mu_o, py::array_t<Float> mu_i, py::array_t<Float> phi_d) {
             return py::vectorize([&l](Float mu_o, Float mu_i, Float phi_d) { return l.eval(mu_o, mu_i, phi_d); })(mu_o, mu_i, phi_d);
         }, py::arg("mu_o"), py::arg("mu_i"), py::arg("phi_d") = 0)
         .def("matrix", &Layer::matrix, py::arg("matrix") = 0)

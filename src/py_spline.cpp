@@ -4,7 +4,6 @@
 
 #define D(...) DOC(layer, __VA_ARGS__ )
 
-namespace py = pybind;
 using namespace layer::spline;
 
 void python_export_spline(py::module &m) {

@@ -1,10 +1,9 @@
 #include <layer/fourier.h>
-#include <pybind/functional.h>
+#include <pybind11/functional.h>
 
 #include "python.h"
 
 using namespace layer;
-namespace py = pybind;
 
 void python_export_fourier(py::module &m_) {
     py::module m= m_.def_submodule("fourier", "Functions for sampling and evaluating Fourier series");
@@ -22,7 +21,7 @@ void python_export_fourier(py::module &m_) {
         return c;
     }, D(convolveFourier), py::arg("a"), py::arg("b"));
 
-    m.def("evalFourier", [](const std::vector<float> &coeffs, py::array_dtype<Float> phi) {
+    m.def("evalFourier", [](const std::vector<float> &coeffs, py::array_t<Float> phi) {
         float *temp = fourier_aligned_alloca(coeffs.size() * sizeof(float));
         memcpy(temp, &coeffs[0], sizeof(float) * coeffs.size());
         return py::vectorize([&](Float phi) { return evalFourier(temp, coeffs.size(), phi); })(phi);
