@@ -37,6 +37,9 @@ void python_export_math(py::module &m) {
     math.attr("InvSqrtTwoPi")    = py::cast(math::InvSqrtTwoPi_d);
     math.attr("OneMinusEpsilon") = py::cast(math::OneMinusEpsilon);
     math.attr("RecipOverflow")   = py::cast(math::RecipOverflow);
+    math.attr("Infinity")        = py::cast(math::Infinity);
+    math.attr("MaxFloat")        = py::cast(math::MaxFloat);
+    math.attr("MachineEpsilon")  = py::cast(math::MachineEpsilon);
 
     math.def("findInterval", [](size_t size, py::function pred) {
         return math::findInterval(size, [&](size_t i) { return pred.call(i).cast<bool>(); });
