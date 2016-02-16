@@ -50,6 +50,7 @@ find_package(FFTW)
 
 if (PKG_FFTW_FOUND)
   add_definitions("-DHAVE_FFTW")
+  include_directories(${FFTW_INCLUDES})
 endif()
 
 # Compile with AVX
