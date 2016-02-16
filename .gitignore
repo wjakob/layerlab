@@ -9,3 +9,5 @@ layerlab.pyd
 __pycache__
 \.DS_Store
 tbb
+/.ninja_*
+/*.ninja

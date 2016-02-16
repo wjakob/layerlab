@@ -10,6 +10,9 @@ cmake_minimum_required(VERSION 2.8)
 project(layerlab)
 
 option(USE_AVX "Enable AVX optimizations" TRUE)
+set(LAYERLAB_PYTHON_VERSION "" CACHE STRING "Python version to use for compiling layer lab")
+
+include(CheckCXXCompilerFlag)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to 'Release' as none was specified.")
@@ -17,10 +20,18 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
     "MinSizeRel" "RelWithDebInfo")
 endif()
+string(TOUPPER "${CMAKE_BUILD_TYPE}" U_CMAKE_BUILD_TYPE)
 
-set(Python_ADDITIONAL_VERSIONS 3.4 3.5 3.6)
-find_package(PythonLibs REQUIRED)
-find_package(PythonInterp QUIET)
+# Try to autodetect Python (can be overridden manually if needed)
+set(Python_ADDITIONAL_VERSIONS 3.4 3.5 3.6 3.7)
+if (NOT ${LAYERLAB_PYTHON_VERSION} STREQUAL "")
+  find_package(PythonLibs ${LAYERLAB_PYTHON_VERSION} EXACT)
+  if (NOT PythonLibs_FOUND)
+    find_package(PythonLibs ${LAYERLAB_PYTHON_VERSION} REQUIRED)
+  endif()
+else()
+  find_package(PythonLibs REQUIRED)
+endif()
 
 # Build TBB
 if (UNIX)
@@ -33,14 +44,29 @@ option(TBB_BUILD_TBBMALLOC       "" OFF)
 option(TBB_BUILD_TBBMALLOC_PROXY "" OFF)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/ext/tbb" tbb)
 
-string(TOUPPER "${CMAKE_BUILD_TYPE}" U_CMAKE_BUILD_TYPE)
-if (UNIX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unsequenced")
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  CHECK_CXX_COMPILER_FLAG("-std=c++14" HAS_CPP14_FLAG)
+  CHECK_CXX_COMPILER_FLAG("-std=c++11" HAS_CPP11_FLAG)
+
+  if (HAS_CPP14_FLAG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+  elseif (HAS_CPP11_FLAG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  else()
+    message(FATAL_ERROR "Unsupported compiler -- at least C++11 support is needed!")
   endif()
+
+  # Enable link time optimization and set the default symbol
+  # visibility to hidden (very important to obtain small binaries)
   if (NOT ${U_CMAKE_BUILD_TYPE} MATCHES DEBUG)
+    # Default symbol visibility
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
+
+    # Check for Link Time Optimization support
+    CHECK_CXX_COMPILER_FLAG("-flto" HAS_LTO_FLAG)
+    if (HAS_LTO_FLAG)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
+    endif()
   endif()
 endif()
 
@@ -121,7 +147,7 @@ add_library(layerlab SHARED
 )
 
 add_custom_target(mkdoc COMMAND
-  python3 ${CMAKE_CURRENT_SOURCE_DIR}/ext/pybind11/tools/mkdoc.py 
+  python3 ${CMAKE_CURRENT_SOURCE_DIR}/ext/pybind11/tools/mkdoc.py
   -I${PYTHON_INCLUDE_DIR} -Iext/eigen -Iext/pybind11/include -Iext/filesystem
   -Iext/tinyformat -Iinclude
   ${CMAKE_CURRENT_SOURCE_DIR}/include/layer/*.h > ${CMAKE_CURRENT_SOURCE_DIR}/src/py_doc.h)
