@@ -20,7 +20,6 @@ PYTHON_DECLARE(fresnel);
 PYTHON_DECLARE(quad);
 
 PYBIND11_PLUGIN(layerlab) {
-    py::init_threading();
     py::module m("layerlab", "Layer lab Python plugin");
 
     PYTHON_IMPORT(math);
