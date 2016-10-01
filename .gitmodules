@@ -1,6 +1,6 @@
 [submodule "ext/pybind11"]
 	path = ext/pybind11
-	url = https://github.com/wjakob/pybind11
+	url = https://github.com/pybind/pybind11
 [submodule "ext/eigen"]
 	path = ext/eigen
 	url = https://github.com/RLovelett/eigen

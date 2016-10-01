@@ -84,7 +84,7 @@ void python_export_filesystem(py::module &m) {
             return py::buffer_info(
                 m.data(),
                 sizeof(uint8_t),
-                py::format_descriptor<uint8_t>::value(),
+                py::format_descriptor<uint8_t>::format(),
                 1,
                 { (size_t) m.size() },
                 { sizeof(uint8_t) }

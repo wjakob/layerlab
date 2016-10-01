@@ -42,6 +42,6 @@ void python_export_math(py::module &m) {
     math.attr("MachineEpsilon")  = py::cast(math::MachineEpsilon);
 
     math.def("findInterval", [](size_t size, py::function pred) {
-        return math::findInterval(size, [&](size_t i) { return pred.call(i).cast<bool>(); });
+        return math::findInterval(size, [&](size_t i) { return pred(i).cast<bool>(); });
     }, D(math, findInterval));
 }

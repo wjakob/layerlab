@@ -9,7 +9,7 @@ template <typename Type> void init_fixed_from_buffer(Type &v, py::buffer &b) {
     typedef typename Type::Scalar Scalar;
 
     py::buffer_info info = b.request();
-    if (info.format != py::format_descriptor<Scalar>::value())
+    if (info.format != py::format_descriptor<Scalar>::format())
         throw std::runtime_error("Incompatible buffer format!");
     if (!((info.ndim == 1 && info.strides[0] == sizeof(Scalar)) ||
           (info.ndim == 2 &&
@@ -87,7 +87,7 @@ py::class_<Type> bind_eigen_1_3(py::module &m, const char *name,
                 m.data(),        /* Pointer to buffer */
                 sizeof(Scalar),  /* Size of one scalar */
                 /* Python struct-style format descriptor */
-                py::format_descriptor<Scalar>::value(),
+                py::format_descriptor<Scalar>::format(),
                 1, { (size_t) Type::Dimension },
                 { sizeof(Scalar) }
             );
@@ -116,7 +116,7 @@ py::class_<Type> bind_eigen_1(py::module &m, const char *name,
         })
         .def("__init__", [](Type &v, py::buffer b) {
             py::buffer_info info = b.request();
-            if (info.format != py::format_descriptor<Scalar>::value()) {
+            if (info.format != py::format_descriptor<Scalar>::format()) {
                 throw std::runtime_error("Incompatible buffer format!");
             } else if (info.ndim == 1 && info.strides[0] == sizeof(Scalar)) {
                 new (&v) Type(info.shape[0]);
@@ -198,7 +198,7 @@ py::class_<Type> bind_eigen_1(py::module &m, const char *name,
                 m.data(),                /* Pointer to buffer */
                 sizeof(Scalar),          /* Size of one scalar */
                 /* Python struct-style format descriptor */
-                py::format_descriptor<Scalar>::value(),
+                py::format_descriptor<Scalar>::format(),
                 1,                       /* Number of dimensions */
                 { (size_t) m.size() },   /* Buffer dimensions */
                 { sizeof(Scalar) }       /* Strides (in bytes) for each index */
@@ -233,7 +233,7 @@ py::class_<Type> bind_eigen_2(py::module &m, const char *name,
         })
         .def("__init__", [](Type &m, py::buffer b) {
             py::buffer_info info = b.request();
-            if (info.format != py::format_descriptor<Scalar>::value())
+            if (info.format != py::format_descriptor<Scalar>::format())
                 throw std::runtime_error("Incompatible buffer format!");
             if (info.ndim == 1) {
                 new (&m) Type(info.shape[0], 1);
@@ -325,7 +325,7 @@ py::class_<Type> bind_eigen_2(py::module &m, const char *name,
                 m.data(),                /* Pointer to buffer */
                 sizeof(Scalar),          /* Size of one scalar */
                 /* Python struct-style format descriptor */
-                py::format_descriptor<Scalar>::value(),
+                py::format_descriptor<Scalar>::format(),
                 2,                       /* Number of dimensions */
                 { (size_t) m.rows(),     /* Buffer dimensions */
                   (size_t) m.cols() },
