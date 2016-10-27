@@ -378,7 +378,7 @@ Scalar invert1D(Scalar min, Scalar max, const Scalar *values, size_t size, Scala
 
     while (true) {
         /* Fall back to a bisection step when t is out of bounds */
-        if (!(t >= a && t <= b))
+        if (!(t > a && t < b))
             t = (Scalar) 0.5 * (a + b);
 
         /* Evaluate the spline and its derivative */
@@ -442,7 +442,7 @@ Scalar invert1D(const Scalar *nodes, const Scalar *values, size_t size, Scalar y
 
     while (true) {
         /* Fall back to a bisection step when t is out of bounds */
-        if (!(t >= a && t <= b))
+        if (!(t > a && t < b))
             t = (Scalar) 0.5 * (a + b);
 
         /* Evaluate the spline and its derivative */
@@ -531,8 +531,8 @@ Scalar sample1D(Scalar min, Scalar max, const Scalar *values, const Scalar *cdf,
     Scalar a = 0, b = 1, value, deriv;
     while (true) {
         /* Fall back to a bisection step when t is out of bounds */
-        if (!(t >= a && t <= b))
-            t = 0.5f * (a + b);
+        if (!(t > a && t < b))
+            t = (Scalar) 0.5 * (a + b);
 
         /* Evaluate the definite integral and its derivative
            (i.e. the spline) */
@@ -625,8 +625,8 @@ Scalar sample1D(const Scalar *nodes, const Scalar *values, const Scalar *cdf,
     Scalar a = 0, b = 1, value, deriv;
     while (true) {
         /* Fall back to a bisection step when t is out of bounds */
-        if (!(t >= a && t <= b))
-            t = 0.5f * (a + b);
+        if (!(t > a && t < b))
+            t = (Scalar) 0.5 * (a + b);
 
         /* Evaluate the definite integral and its derivative
            (i.e. the spline) */

@@ -237,7 +237,7 @@ Float sampleFourier(const float *coeffs, const double *recip, size_t nCoeffs,
 
         b -= value / deriv;
 
-        if (!(b >= a && b <= c))
+        if (!(b > a && b < c))
             b = 0.5f * (a + c);
 
         cosB = std::cos(b);
@@ -356,7 +356,7 @@ Color3 sampleFourier3(float * const coeffs[3], const double *recip, size_t nCoef
 
         b -= value / deriv;
 
-        if (!(b >= a && b <= c))
+        if (!(b > a && b < c))
             b = 0.5f * (a + c);
 
         cosB = std::cos(b);
