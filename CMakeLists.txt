@@ -5,7 +5,7 @@
 # All rights reserved. Use of this source code is governed by a
 # BSD-style license that can be found in the LICENSE file.
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 
 project(layerlab)
 
@@ -22,27 +22,22 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 string(TOUPPER "${CMAKE_BUILD_TYPE}" U_CMAKE_BUILD_TYPE)
 
-# Try to autodetect Python (can be overridden manually if needed)
-set(Python_ADDITIONAL_VERSIONS 3.4 3.5 3.6 3.7)
-if (NOT ${LAYERLAB_PYTHON_VERSION} STREQUAL "")
-  find_package(PythonLibs ${LAYERLAB_PYTHON_VERSION} EXACT)
-  if (NOT PythonLibs_FOUND)
-    find_package(PythonLibs ${LAYERLAB_PYTHON_VERSION} REQUIRED)
-  endif()
-else()
-  find_package(PythonLibs REQUIRED)
-endif()
-
 # Build TBB
 if (UNIX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+  set(CMAKE_MACOSX_RPATH ON)
 endif()
 
 option(TBB_BUILD_SHARED          "" OFF)
 option(TBB_BUILD_STATIC          "" ON)
+option(TBB_BUILD_TESTS           "" OFF)
 option(TBB_BUILD_TBBMALLOC       "" OFF)
 option(TBB_BUILD_TBBMALLOC_PROXY "" OFF)
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/ext/tbb" tbb)
+
+add_subdirectory(ext/tbb)
+add_subdirectory(ext/pybind11)
+
+set(CMAKE_MACOSX_RPATH ON)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   CHECK_CXX_COMPILER_FLAG("-std=c++14" HAS_CPP14_FLAG)
@@ -120,7 +115,7 @@ include_directories(
   include
 )
 
-add_library(layerlab SHARED
+pybind11_add_module(layerlab SHARED
   # Layer lab files
   include/layer/common.h
   include/layer/color.h
@@ -141,7 +136,7 @@ add_library(layerlab SHARED
   include/layer/simd.h       src/simd.cpp
 
   # Python API
-  src/python.cpp src/py_vector.cpp src/py_math.cpp src/py_fourier.cpp
+  src/python.cpp src/py_math.cpp src/py_fourier.cpp
   src/py_spline.cpp src/py_layer.cpp src/py_quad.cpp src/py_fresnel.cpp
   src/py_filesystem.cpp
 )
@@ -154,50 +149,8 @@ add_custom_target(mkdoc COMMAND
 
 set_target_properties(layerlab PROPERTIES PREFIX "")
 link_directories(${CMAKE_CURRENT_BUILD_DIR}/tbb)
-target_link_libraries(layerlab tbb_static)
+target_link_libraries(layerlab PRIVATE tbb_static)
 
 if (PKG_FFTW_FOUND)
-  target_link_libraries(layerlab ${FFTW_THREADS_LIB})
-endif()
-
-if (WIN32)
-  if (MSVC)
-    # Enforce size-based optimization and link time code generation on MSVC (~30% smaller binaries in experiments)
-    set_target_properties(layerlab PROPERTIES COMPILE_FLAGS "/Os /GL /MP /bigobj")
-    set_target_properties(layerlab PROPERTIES LINK_FLAGS "/LTCG")
-  endif()
-
-  # .PYD file extension on Windows
-  set_target_properties(layerlab PROPERTIES SUFFIX ".pyd")
-
-  # Link against the Python shared library
-  target_link_libraries(layerlab ${PYTHON_LIBRARY})
-elseif (UNIX)
-  # It's quite common to have multiple copies of the same Python version
-  # installed on one's system. E.g.: one copy from the OS and another copy
-  # that's statically linked into an application like Blender or Maya.
-  # If we link our plugin library against the OS Python here and import it
-  # into Blender or Maya later on, this will cause segfaults when multiple
-  # conflicting Python instances are active at the same time.
-
-  # Windows does not seem to be affected by this issue. The solution for Linux
-  # and Mac OS is simple: we just don't link against the Python library. The
-  # resulting shared library will have missing symbols, but that's perfectly
-  # fine -- they will be resolved at import time.
-
-  # .SO file extension on Linux/Mac OS
-  set_target_properties(layerlab PROPERTIES SUFFIX ".so")
-
-  # Strip unnecessary sections of the binary on Linux/Mac OS
-  if(APPLE)
-    set_target_properties(layerlab PROPERTIES MACOSX_RPATH ".")
-    set_target_properties(layerlab PROPERTIES LINK_FLAGS "-undefined dynamic_lookup -dead_strip")
-    if (NOT ${U_CMAKE_BUILD_TYPE} MATCHES DEBUG)
-      add_custom_command(TARGET layerlab POST_BUILD COMMAND strip -u -r layerlab.so)
-    endif()
-  else()
-    if (NOT ${U_CMAKE_BUILD_TYPE} MATCHES DEBUG)
-      add_custom_command(TARGET layerlab POST_BUILD COMMAND strip layerlab.so)
-    endif()
-  endif()
+  target_link_libraries(layerlab PRIVATE ${FFTW_THREADS_LIB})
 endif()

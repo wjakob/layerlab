@@ -160,3 +160,27 @@ void coordinateSystem(const TVector<Scalar, 3> &n, TVector<Scalar, 3> &s,
 }
 
 NAMESPACE_END(layer)
+
+
+NAMESPACE_BEGIN(Eigen)
+NAMESPACE_BEGIN(internal)
+    /* Inform Eigen expression template system how to deal with these new types */
+
+    template <typename Scalar, int Dimension>
+    struct traits<layer::TVector<Scalar, Dimension>>
+        : public Eigen::internal::traits<Eigen::Matrix<Scalar, Dimension, 1>> {};
+
+    template <typename Scalar, int Dimension>
+    struct evaluator<layer::TVector<Scalar, Dimension>>
+        : public Eigen::internal::evaluator<Eigen::Matrix<Scalar, Dimension, 1>> {};
+
+    template <typename Scalar, int Dimension>
+    struct traits<layer::TPoint<Scalar, Dimension>>
+        : public Eigen::internal::traits<Eigen::Matrix<Scalar, Dimension, 1>> {};
+
+    template <typename Scalar, int Dimension>
+    struct evaluator<layer::TPoint<Scalar, Dimension>>
+        : public Eigen::internal::evaluator<Eigen::Matrix<Scalar, Dimension, 1>> {};
+
+NAMESPACE_END(internal)
+NAMESPACE_END(Eigen)

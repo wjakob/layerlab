@@ -11,7 +11,6 @@
 #include "python.h"
 
 PYTHON_DECLARE(math);
-PYTHON_DECLARE(vector);
 PYTHON_DECLARE(spline);
 PYTHON_DECLARE(fourier);
 PYTHON_DECLARE(filesystem);
@@ -23,7 +22,6 @@ PYBIND11_PLUGIN(layerlab) {
     py::module m("layerlab", "Layer lab Python plugin");
 
     PYTHON_IMPORT(math);
-    PYTHON_IMPORT(vector);
     PYTHON_IMPORT(spline);
     PYTHON_IMPORT(fourier);
     PYTHON_IMPORT(filesystem);
