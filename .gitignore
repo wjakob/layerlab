@@ -1,8 +1,8 @@
 CMakeCache.txt
 CMakeFiles
 Makefile
-layerlab.so
-layerlab.pyd
+layerlab.*so
+layerlab.*pyd
 *.cmake
 *.pyc
 *.pyo
