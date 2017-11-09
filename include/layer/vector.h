@@ -51,6 +51,9 @@ public:
     /// Create a new 4D vector (type error if \c Dimension != 4)
     TVector(Scalar x, Scalar y, Scalar z, Scalar w) : Base(x, y, z, w) { }
 
+    /// Dummy constructor
+    TVector(ssize_t rows, ssize_t cols) { assert(rows * cols == Dimension); (void) rows; (void) cols; }
+
     /// Construct a vector from a dense Eigen expression template
     template <typename Derived> TVector(const Eigen::DenseBase<Derived>& p)
         : Base(p) { }

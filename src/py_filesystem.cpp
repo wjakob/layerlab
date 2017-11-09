@@ -70,7 +70,7 @@ void python_export_filesystem(py::module &m) {
             return oss.str();
         });
 
-    py::class_<MemoryMappedFile>(fs_module, "MemoryMappedFile")
+    py::class_<MemoryMappedFile>(fs_module, "MemoryMappedFile", py::buffer_protocol())
         .def(py::init<fs::path, size_t>())
         .def(py::init<fs::path, bool>())
         .def(py::init<fs::path>())

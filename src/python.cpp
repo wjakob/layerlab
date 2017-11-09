@@ -18,8 +18,8 @@ PYTHON_DECLARE(layer);
 PYTHON_DECLARE(fresnel);
 PYTHON_DECLARE(quad);
 
-PYBIND11_PLUGIN(layerlab) {
-    py::module m("layerlab", "Layer lab Python plugin");
+PYBIND11_MODULE(layerlab, m) {
+    m.doc() = "Layer lab Python plugin";
 
     PYTHON_IMPORT(math);
     PYTHON_IMPORT(spline);
@@ -28,6 +28,4 @@ PYBIND11_PLUGIN(layerlab) {
     PYTHON_IMPORT(layer);
     PYTHON_IMPORT(fresnel);
     PYTHON_IMPORT(quad);
-
-    return m.ptr();
 }
