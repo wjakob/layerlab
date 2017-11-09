@@ -1,15 +1,15 @@
 [submodule "ext/pybind11"]
-	path = ext/pybind11
-	url = https://github.com/pybind/pybind11
+    path = ext/pybind11
+    url = https://github.com/pybind/pybind11
 [submodule "ext/eigen"]
-	path = ext/eigen
-	url = https://github.com/RLovelett/eigen
+    path = ext/eigen
+    url = https://github.com/libigl/eigen
 [submodule "ext/tbb"]
-	path = ext/tbb
-	url = https://github.com/wjakob/tbb
+    path = ext/tbb
+    url = https://github.com/wjakob/tbb
 [submodule "ext/tinyformat"]
-	path = ext/tinyformat
-	url = https://github.com/wjakob/tinyformat
+    path = ext/tinyformat
+    url = https://github.com/wjakob/tinyformat
 [submodule "ext/filesystem"]
-	path = ext/filesystem
-	url = https://github.com/wjakob/filesystem
+    path = ext/filesystem
+    url = https://github.com/wjakob/filesystem
