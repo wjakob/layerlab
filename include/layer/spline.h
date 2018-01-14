@@ -875,7 +875,7 @@ Scalar eval2D(const Scalar *nodes1, size_t size1, const Scalar *nodes2,
             if (wxy == 0)
                 continue;
 
-            ssize_t pos = (offset[1] + y) * size1 + offset[0] + x;
+            ssize_t pos = (offset[1] + yi) * size1 + offset[0] + xi;
             result += values[pos] * wxy;
         }
     }
